@@ -16,13 +16,15 @@ def get_tasks(
     owner_id: int,
     status: str | None = None,
     priority: str | None = None,
+    skip: int = 0,
+    limit: int = 20,
 ):
     query = db.query(Task).filter(Task.owner_id == owner_id)
     if status:
         query = query.filter(Task.status == status)
     if priority:
         query = query.filter(Task.priority == priority)
-    return query.all()
+    return query.offset(skip).limit(limit).all()
 
 
 def get_task(db: Session, task_id: int, owner_id: int):

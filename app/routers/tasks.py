@@ -24,10 +24,15 @@ def create_task(
 def list_tasks(
     status: Optional[str] = Query(None, description="Filter by status"),
     priority: Optional[str] = Query(None, description="Filter by priority"),
+    skip: int = Query(0, ge=0),
+    limit: int = Query(20, ge=1, le=100),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return crud.get_tasks(db, owner_id=current_user.id, status=status, priority=priority)
+    return crud.get_tasks(
+        db, owner_id=current_user.id, status=status, priority=priority,
+        skip=skip, limit=limit,
+    )
 
 
 @router.get("/{task_id}", response_model=TaskResponse)
