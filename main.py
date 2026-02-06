@@ -24,3 +24,8 @@ def generic_error_handler(request: Request, exc: Exception):
 @app.get("/")
 def root():
     return {"message": "TaskFlow API is running"}
+
+
+@app.get("/health")
+def health_check():
+    return {"status": "healthy"}
