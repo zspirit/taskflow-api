@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
+from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, func
+from sqlalchemy.orm import relationship
 from app.database import Base
 
 
@@ -11,5 +12,8 @@ class Task(Base):
     priority = Column(String, default="medium")  # low, medium, high
     status = Column(String, default="todo")  # todo, in_progress, done
     completed = Column(Boolean, default=False)
+    owner_id = Column(Integer, ForeignKey("users.id"), nullable=False)
     created_at = Column(DateTime, server_default=func.now())
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now())
+
+    owner = relationship("User", back_populates="tasks")

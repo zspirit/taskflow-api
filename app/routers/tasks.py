@@ -17,7 +17,7 @@ def create_task(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return crud.create_task(db, task_data)
+    return crud.create_task(db, task_data, owner_id=current_user.id)
 
 
 @router.get("/", response_model=List[TaskResponse])
@@ -25,7 +25,7 @@ def list_tasks(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return crud.get_tasks(db)
+    return crud.get_tasks(db, owner_id=current_user.id)
 
 
 @router.get("/{task_id}", response_model=TaskResponse)
@@ -34,7 +34,7 @@ def get_task(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    task = crud.get_task(db, task_id)
+    task = crud.get_task(db, task_id, owner_id=current_user.id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     return task
@@ -47,7 +47,7 @@ def update_task(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    task = crud.update_task(db, task_id, task_data)
+    task = crud.update_task(db, task_id, task_data, owner_id=current_user.id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")
     return task
@@ -59,6 +59,6 @@ def delete_task(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    deleted = crud.delete_task(db, task_id)
+    deleted = crud.delete_task(db, task_id, owner_id=current_user.id)
     if not deleted:
         raise HTTPException(status_code=404, detail="Task not found")
