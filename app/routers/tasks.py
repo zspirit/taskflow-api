@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 
 from app.database import get_db
 from app.schemas.task import TaskCreate, TaskUpdate, TaskResponse
@@ -22,10 +22,12 @@ def create_task(
 
 @router.get("/", response_model=List[TaskResponse])
 def list_tasks(
+    status: Optional[str] = Query(None, description="Filter by status"),
+    priority: Optional[str] = Query(None, description="Filter by priority"),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    return crud.get_tasks(db, owner_id=current_user.id)
+    return crud.get_tasks(db, owner_id=current_user.id, status=status, priority=priority)
 
 
 @router.get("/{task_id}", response_model=TaskResponse)

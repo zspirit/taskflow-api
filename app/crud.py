@@ -11,8 +11,18 @@ def create_task(db: Session, task_data: TaskCreate, owner_id: int):
     return task
 
 
-def get_tasks(db: Session, owner_id: int):
-    return db.query(Task).filter(Task.owner_id == owner_id).all()
+def get_tasks(
+    db: Session,
+    owner_id: int,
+    status: str | None = None,
+    priority: str | None = None,
+):
+    query = db.query(Task).filter(Task.owner_id == owner_id)
+    if status:
+        query = query.filter(Task.status == status)
+    if priority:
+        query = query.filter(Task.priority == priority)
+    return query.all()
 
 
 def get_task(db: Session, task_id: int, owner_id: int):
